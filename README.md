@@ -28,3 +28,22 @@ Explore and filter the uploaded data using the filtering form.
 Install the required Python packages
 pip install -r requirements.txt
 
+
+![Catalyst_LandingPage:RegisterPage](./screenshots/Catalyst_LandingPage:RegisterPage.png)
+![CityDropdown_QueryBuilder](./screenshots/LoginPage.png)
+![CityDropdown_QueryBuilder](./screenshots/LandingPage_AfterLogin.png)
+!![CityDropdown_QueryBuilder](./screenshots/UploadDataPage_Main.png)
+!![CityDropdown_QueryBuilder](./screenshots/UploadfileSuccess.png)
+!![CityDropdown_QueryBuilder](./screenshots/UserAddSuccessMessage.png)
+![CityDropdown_QueryBuilder](./screenshots/CityDropdown_QueryBuilder.png)
+![CityDropdown_QueryBuilder](./screenshots/LandingPage_AfterLogin.png)
+![CityDropdown_QueryBuilder](./screenshots/IndustryDropDown_QueryBuilder.png)
+![CityDropdown_QueryBuilder](./screenshots/CountryDropdown_Querybuilder.png)
+![CityDropdown_QueryBuilder](./screenshots/CurrentEmpDropDown_QueryBuilder.png)
+![CityDropdown_QueryBuilder](./screenshots/QueryBuiderPage_Main.png)
+![CityDropdown_QueryBuilder](./screenshots/ResultCount.png)
+![CityDropdown_QueryBuilder](./screenshots/StateDropDown_QueryBuilder.png)
+![CityDropdown_QueryBuilder](./screenshots/TotalEmpDropDown_QueryBuilder.png)
+![CityDropdown_QueryBuilder](./screenshots/YearFoundDropDown_QueryBuilder.png)
+![CityDropdown_QueryBuilder](./screenshots/ExistingUser:AddUserButton.png)
+
