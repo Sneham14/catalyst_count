@@ -1,0 +1,7 @@
+Django==3.2.11
+psycopg2-binary==2.9.6
+python-decouple==3.6
+django-environ==0.10.0
+django-allauth-0.54.0
+django-chunked-upload-2.0.0
+djangorestframework>=3.14.0
