@@ -9,7 +9,9 @@ Features:-
 
 File Upload
 Users can log in to the application.
+\n
 Users can upload a large volume CSV file (1GB) with a visual progress indicator.
+\n
 Uploaded file contents are stored in the PostgreSQL database.
 
 Data Filtering:-
