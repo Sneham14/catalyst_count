@@ -22,7 +22,6 @@ class CompanyDataForm(forms.ModelForm):
         }
 
 class UserDataForm(forms.ModelForm):
-    
     class Meta:
         model = UserModel
         fields = ('email', 'username','is_active', )

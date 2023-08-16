@@ -1,8 +1,15 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator, MinLengthValidator
 from django.contrib.auth.models import AbstractUser
+import os
+from chunked_upload.models import ChunkedUpload
 
-# Create your models here.
+
+MyChunkedUpload = ChunkedUpload
+
+def upload_path(instance, filename):
+    return os.path.join('catalyst_count', 'uploads', filename)
+
 class CompanyDataModel(models.Model):
     
     name = models.CharField(max_length=120)
@@ -30,6 +37,7 @@ class CompanyDataModel(models.Model):
     total_employee_estimate = models.BigIntegerField(# Used BigIntegerField for larger values
         validators=[MinValueValidator(0)]
     )
+    uploaded_file = models.FileField(upload_to=upload_path, null=True, blank=True)
 
 
     def __str__(self):

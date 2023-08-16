@@ -13,9 +13,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include
-from catalyst_count_app.views import users, result_count_api,home, register, add_user, query_builder, upload_data, user_login, user_logout
+from catalyst_count_app.views import  users, result_count_api,home, register, add_user, query_builder, upload_data,  user_login, user_logout
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -29,6 +31,8 @@ urlpatterns = [
     path('user_logout', user_logout, name='user_logout'),
     path('result_count_api/', result_count_api, name='result_count_api'),
     path('users',users,name="users"),
-]
-    
 
+
+]
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

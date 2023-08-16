@@ -7,11 +7,17 @@ import os
 from .forms import *
 from .serializers import *
 from .models import *
+from .models import MyChunkedUpload
 import csv
 import pandas as pd
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from chunked_upload.views import ChunkedUploadView, ChunkedUploadCompleteView
+from django.http import JsonResponse
+from django.conf import settings  # Import Django settings
+
+
 
 
 # Create your views here.
@@ -55,44 +61,66 @@ def user_logout(request):
     return redirect('user_login')  
 
 
+class Chunk_Upload_View(ChunkedUploadView):
+    model = MyChunkedUpload  # Replace with your actual model for storing uploaded files
 
-@login_required
-def upload_data(request):
-    if request.method == 'POST':
+    def check_permissions(self, request):
+        # Add any necessary permission checks here
+        pass
+
+
+class Chunk_Upload_Complete(ChunkedUploadCompleteView):
+    model = MyChunkedUpload  # Replace with your actual model for storing uploaded files
+
+    def check_permissions(self, request):
+        # Add any necessary permission checks here
+        pass
+
+    def upload_complete(self, request, uploaded_file):
         try:
-            uploaded_file = request.FILES['dataFile']
-            upload_directory = 'uploads'
-            os.makedirs(upload_directory, exist_ok=True)
-            file_path = os.path.join(upload_directory, uploaded_file.name)
-            
+            # Create the "uploads" folder if it doesn't exist within MEDIA_ROOT
+            upload_dir = os.path.join(settings.MEDIA_ROOT, 'uploads')
+            os.makedirs(upload_dir, exist_ok=True)
+
+            # Save the uploaded file to the "uploads" folder
+            file_path = os.path.join(upload_dir, uploaded_file.name)
             with open(file_path, 'wb') as destination:
                 for chunk in uploaded_file.chunks():
                     destination.write(chunk)
             
-            csv_data = pd.read_csv(file_path, encoding='utf-8')
-            csv_data['year founded'] = pd.to_numeric(csv_data['year founded'], errors='coerce')
-
-            csv_reader = csv.DictReader(csv_data)
-            for index, row in csv_data.iterrows():
-                if not pd.isna(row['year founded']): 
-                    CompanyDataModel.objects.create(
-                        name=row['name'],
-                        domain=row['domain'],
-                        year_founded=row['year_founded'],
-                        industry=row['industry'],
-                        size_range=row['size_range'],
-                        locality=row['locality'], 
-                        country=row['country'],
-                        linkedin_url=row['linkedin_url'],
-                        current_employee_estimate=row['current_employee_estimate'],
-                        total_employee_estimate=row['total_employee_estimate']
-                        )
-
-            messages.success(request, "File uploaded successfully.")        
-        except KeyError :
-            messages.error(request, "No file selected for upload.")
+            # Process the uploaded CSV file
+            with open(file_path, 'r') as csv_file:
+                reader = csv.DictReader(csv_file)
+                csv_fields = set(reader.fieldnames)
+                model_fields = set([field.name for field in CompanyDataModel._meta.get_fields()])
+                
+                if csv_fields != model_fields:
+                    return JsonResponse({'message': 'CSV file fields do not match model fields.'}, status=400)
     
-    return render(request, 'uploaddata.html')
+                for row in reader:
+                    try:
+                        # Convert and save data to CompanyDataModel
+                        instance = CompanyDataModel(**row)
+                        instance.save()
+                    except Exception as e:
+                        return JsonResponse({'message': f'Error saving data: {str(e)}'}, status=400)
+                    
+        except Exception as e:
+            return JsonResponse({'message': f'Error processing CSV file: {str(e)}'}, status=500)
+
+        return JsonResponse({'message': 'File uploaded successfully.'})
+    
+def upload_data(request):
+    if request.method == 'POST':
+        form = CompanyDataForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return JsonResponse({'message': 'File uploaded successfully.'})
+    else:
+        form = CompanyDataForm()
+    
+    return render(request, 'uploaddata.html', {'form': form})
+
 
 @login_required
 def query_builder(request):
